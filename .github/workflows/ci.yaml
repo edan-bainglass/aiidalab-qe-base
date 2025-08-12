@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-    FORCE_COLOR: 1
+  FORCE_COLOR: 1
 
 jobs:
   pre-commit:
