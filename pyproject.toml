@@ -9,7 +9,7 @@ license = { file = "LICENSE" }
 requires-python = ">=3.9"
 dependencies = [
     "aiida-core~=2.5,<3",
-    "aiidalab-widgets-base @ git+https://github.com/aiidalab/aiidalab-widgets-base@master",
+    "aiidalab-widgets-base~=2.4.0",
     "aiida-quantumespresso~=4.12.0",
     "anywidget==0.9.13",
     "table_widget~=0.0.2",
@@ -30,7 +30,7 @@ Homepage = "https://github.com/aiidalab/aiidalab-qe-base"
 Repository = "https://github.com/aiidalab/aiidalab-qe-base"
 
 [build-system]
-requires = ["flit_core>=3.2,<4"]
+requires = ["flit_core~=3.4"]
 build-backend = "flit_core.buildapi"
 
 [tool.flit.module]
