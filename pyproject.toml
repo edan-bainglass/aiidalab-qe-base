@@ -1,0 +1,28 @@
+[project]
+name = "aiidalab-qe-base"
+description = "Utilities, widgets, and components shared by the AiiDAlab Quantum ESPRESSO app and its plugins"
+authors = [
+    { name = "AiiDAlab team", email = "aiidalab@materialscloud.org" }
+]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.9"
+dependencies = []
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/aiidalab/aiidalab-qe-base"
+Repository = "https://github.com/aiidalab/aiidalab-qe-base"
+
+[build-system]
+requires = ["setuptools>=62.6", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.setuptools.packages.find]
+include = ["aiidalab_qe_base*"]
+
+[tool.setuptools.dynamic]
+version = { attr = "aiidalab_qe_base.__version__" }
