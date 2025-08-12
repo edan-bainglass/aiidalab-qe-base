@@ -10,6 +10,11 @@ requires-python = ">=3.9"
 dependencies = []
 dynamic = ["version"]
 
+[project.optional-dependencies]
+dev = [
+    "pre-commit~=3.2",
+]
+
 [project.urls]
 Homepage = "https://github.com/aiidalab/aiidalab-qe-base"
 Repository = "https://github.com/aiidalab/aiidalab-qe-base"
