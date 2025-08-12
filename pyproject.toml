@@ -20,6 +20,10 @@ dynamic = ["version"]
 dev = [
     "pre-commit~=3.2",
 ]
+test = [
+    "pytest~=7.4",
+    "pytest-cov~=5.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/aiidalab/aiidalab-qe-base"
