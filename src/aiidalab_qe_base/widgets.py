@@ -410,7 +410,7 @@ class QEAppComputationalResourcesWidget(ipw.VBox):
         """
         self.code_selection = ComputationalResourcesWidget(
             include_setup_widget=False,
-            fetch_codes=True,  # TODO resolve testing issues when set to `False`
+            fetch_codes=False,
             **kwargs,
         )
         self.code_selection.layout.width = "80%"
