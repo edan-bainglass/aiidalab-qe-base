@@ -409,6 +409,8 @@ class QEAppComputationalResourcesWidget(ipw.VBox):
         the number of nodes and the number of cpus.
         """
         self.code_selection = ComputationalResourcesWidget(
+            description=kwargs.pop("description", None),
+            default_calc_job_plugin=kwargs.pop("default_calc_job_plugin", None),
             include_setup_widget=False,
             fetch_codes=False,
             **kwargs,
@@ -416,13 +418,26 @@ class QEAppComputationalResourcesWidget(ipw.VBox):
         self.code_selection.layout.width = "80%"
 
         self.num_nodes = ipw.BoundedIntText(
-            value=1, step=1, min=1, max=1000, description="Nodes", width="10%"
+            value=1,
+            step=1,
+            min=1,
+            max=1000,
+            description="Nodes",
         )
+
         self.num_cpus = ipw.BoundedIntText(
-            value=1, step=1, min=1, description="CPUs", width="10%"
+            value=1,
+            step=1,
+            min=1,
+            description="CPUs",
         )
+
         self.btn_setup_resource_detail = ipw.ToggleButton(description="More")
-        self.btn_setup_resource_detail.observe(self._setup_resource_detail, "value")
+        self.btn_setup_resource_detail.observe(
+            self._setup_resource_detail,
+            "value",
+        )
+
         self._setup_resource_detail_output = ipw.Output(layout={"width": "500px"})
 
         # combine code, nodes and cpus
@@ -440,9 +455,12 @@ class QEAppComputationalResourcesWidget(ipw.VBox):
         super().__init__(children=children, **kwargs)
 
         self.resource_detail = ResourceDetailSettings()
+
         tl.dlink(
-            (self.num_cpus, "value"), (self.resource_detail.ntasks_per_node, "value")
+            (self.num_cpus, "value"),
+            (self.resource_detail.ntasks_per_node, "value"),
         )
+
         tl.link((self.code_selection, "value"), (self, "value"))
 
     def update_resources(self, change):
@@ -609,35 +627,43 @@ class ParallelizationSettings(ipw.VBox):
             "layout": {"min_width": "180px"},
         }
         self.npool = ipw.BoundedIntText(
-            value=1, step=1, min=1, max=128, description="Number of k-pools", **extra
+            value=1,
+            step=1,
+            min=1,
+            max=128,
+            description="Number of k-pools",
+            **extra,
         )
         self.override = ipw.Checkbox(
-            escription="",
+            description="",
             indent=False,
             value=False,
             layout=ipw.Layout(max_width="20px"),
         )
-        self.override.observe(self.set_visibility, "value")
+        ipw.dlink(
+            (self.override, "value"),
+            (self.npool.layout, "display"),
+            lambda override: "block" if override else "none",
+        )
+
         super().__init__(
             children=[
                 ipw.HBox(
-                    children=[self.override, self.prompt, self.npool],
+                    children=[
+                        self.override,
+                        self.prompt,
+                        self.npool,
+                    ],
                     layout=ipw.Layout(justify_content="flex-start"),
                 ),
             ],
             **kwargs,
         )
+
         # set the default visibility of the widget
         self.npool.layout.display = "none"
 
-    def set_visibility(self, change):
-        if change["new"]:
-            self.npool.layout.display = "block"
-        else:
-            self.npool.layout.display = "none"
-
     def reset(self):
-        """Reset the parallelization settings."""
         self.npool.value = 1
 
 
