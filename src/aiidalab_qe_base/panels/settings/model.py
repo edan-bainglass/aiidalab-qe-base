@@ -12,10 +12,6 @@ class SettingsModel(PanelModel, HasBlockers):
     include = tl.Bool(False)
     loaded_from_process = tl.Bool(False)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self._defaults = {}
-
     def update(self):
         """Updates the model."""
         pass

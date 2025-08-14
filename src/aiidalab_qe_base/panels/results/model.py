@@ -61,6 +61,20 @@ class ResultsModel(SettingsModel, HasProcess):
             uuid = child.uuid if child else None
         return orm.load_node(uuid) if uuid else None  # type: ignore
 
+    def save_state(self):
+        """Saves the current state of the model to the AiiDA database."""
+        node = self.fetch_process_node()
+        results = node.base.extras.get("results", {})
+        results[self.identifier] = self.get_model_state()
+        node.base.extras.set("results", results)
+
+    def load_state(self):
+        """Loads the state of the model from the AiiDA database."""
+        node = self.fetch_process_node()
+        results = node.base.extras.get("results", {})
+        if self.identifier in results:
+            self.set_model_state(results[self.identifier])
+
     def _get_child_process_status(self, which="this"):
         state, exit_message = self._get_child_state_and_exit_message(which)
         if state == "waiting":
@@ -93,17 +107,3 @@ class ResultsModel(SettingsModel, HasProcess):
             child = which if which != "this" else self.identifier
             return getattr(outputs, child) if child in outputs else AttributeDict({})
         return AttributeDict({key: getattr(node.outputs, key) for key in node.outputs})
-
-    def save_state(self):
-        """Saves the current state of the model to the AiiDA database."""
-        node = self.fetch_process_node()
-        results = node.base.extras.get("results", {})
-        results[self.identifier] = self.get_model_state()
-        node.base.extras.set("results", results)
-
-    def load_state(self):
-        """Loads the state of the model from the AiiDA database."""
-        node = self.fetch_process_node()
-        results = node.base.extras.get("results", {})
-        if self.identifier in results:
-            self.set_model_state(results[self.identifier])
