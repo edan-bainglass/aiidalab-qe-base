@@ -6,6 +6,7 @@ from time import time
 import ipywidgets as ipw
 import traitlets as tl
 from aiida import orm
+from aiida.common.exceptions import NotExistent
 from aiidalab_widgets_base import ComputationalResourcesWidget, LoadingWidget
 from anywidget import AnyWidget
 from IPython.display import clear_output, display
@@ -465,7 +466,11 @@ class QEAppComputationalResourcesWidget(ipw.VBox):
 
     def update_resources(self, change):
         if change["new"]:
-            self.set_resource_defaults(orm.load_code(change["new"]).computer)
+            try:
+                computer = orm.load_code(change["new"]).computer
+            except NotExistent:
+                computer = None
+            self.set_resource_defaults(computer)
 
     def set_resource_defaults(self, computer=None):
         if computer is None:

@@ -18,6 +18,8 @@ class ResourceSettingsModel(SettingsModel, HasModels[CodeModel]):
     warning_messages = tl.Unicode("")
 
     def __init__(self, *args, **kwargs):
+        self.default_codes: dict[str, dict] = kwargs.pop("default_codes", {})
+
         super().__init__(*args, **kwargs)
 
         # Used by the code-setup thread to fetch code options
@@ -25,11 +27,20 @@ class ResourceSettingsModel(SettingsModel, HasModels[CodeModel]):
 
     def add_model(self, identifier, model):
         super().add_model(identifier, model)
-        model.update(self.DEFAULT_USER_EMAIL)
+        code_key = model.default_calc_job_plugin.split(".")[-1]
+        model.update(
+            self.DEFAULT_USER_EMAIL,
+            default_code=self.default_codes.get(code_key, {}).get("code"),
+        )
 
     def refresh_codes(self):
         for _, code_model in self.get_models():
-            code_model.update(self.DEFAULT_USER_EMAIL, refresh=True)
+            code_key = code_model.default_calc_job_plugin.split(".")[-1]
+            code_model.update(
+                self.DEFAULT_USER_EMAIL,
+                default_code=self.default_codes.get(code_key, {}).get("code"),
+                refresh=True,
+            )
 
     def get_model_state(self):
         return {
@@ -50,9 +61,9 @@ class ResourceSettingsModel(SettingsModel, HasModels[CodeModel]):
             if code_model.is_ready
         }
 
-    def set_selected_codes(self, code_data):  # TODO =DEFAULT["codes"]
+    def set_selected_codes(self, code_data=None):
         for identifier, code_model in self.get_models():
-            if identifier in code_data:
+            if identifier in (code_data or self.default_codes):
                 code_model.set_model_state(code_data[identifier])
 
     def _check_blockers(self):
