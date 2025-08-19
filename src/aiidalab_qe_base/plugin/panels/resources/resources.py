@@ -4,10 +4,7 @@ import ipywidgets as ipw
 
 from aiidalab_qe_base.models import CodeModel
 from aiidalab_qe_base.panels.resources import ResourceSettingsPanel
-from aiidalab_qe_base.widgets import (
-    PwCodeResourceSetupWidget,
-    QEAppComputationalResourcesWidget,
-)
+from aiidalab_qe_base import widgets
 
 from .model import PluginResourceSettingsModel
 
@@ -45,7 +42,6 @@ class PluginResourceSettingsPanel(ResourceSettingsPanel[PRSM]):
             (self._model, "override"),
             (self.override, "value"),
         )
-        self.code_widgets_container = ipw.VBox()
 
         self.children = [
             ipw.HBox(
@@ -64,8 +60,6 @@ class PluginResourceSettingsPanel(ResourceSettingsPanel[PRSM]):
             if code_model.is_active:
                 self._toggle_code(code_model)
 
-        return self.code_widgets_container
-
     def _on_global_codes_change(self, _):
         self._model.update()
 
@@ -75,7 +69,7 @@ class PluginResourceSettingsPanel(ResourceSettingsPanel[PRSM]):
     def _render_code_widget(
         self,
         code_model: CodeModel,
-        code_widget: QEAppComputationalResourcesWidget,
+        code_widget: widgets.QEAppComputationalResourcesWidget,
     ):
         super()._render_code_widget(code_model, code_widget)
         self._link_override_to_widget_disable(code_model, code_widget)
@@ -103,7 +97,7 @@ class PluginResourceSettingsPanel(ResourceSettingsPanel[PRSM]):
             (code_widget.btn_setup_resource_detail, "disabled"),
             lambda override: not override,
         )
-        if isinstance(code_widget, PwCodeResourceSetupWidget):
+        if isinstance(code_widget, widgets.PwCodeResourceSetupWidget):
             ipw.dlink(
                 (code_model, "override"),
                 (code_widget.parallelization.override, "disabled"),

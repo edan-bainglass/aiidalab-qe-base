@@ -21,6 +21,7 @@ class ResourceSettingsPanel(SettingsPanel[RSM]):
     def __init__(self, model, **kwargs):
         super().__init__(model, **kwargs)
         self.code_widgets = {}
+        self.code_widgets_container = ipw.VBox()
 
     def register_code_trait_callbacks(self, code_model: CodeModel):
         """Registers event handlers on code model traits."""
