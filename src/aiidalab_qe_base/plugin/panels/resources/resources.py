@@ -14,7 +14,7 @@ PRSM = t.TypeVar("PRSM", bound=PluginResourceSettingsModel)
 class PluginResourceSettingsPanel(ResourceSettingsPanel[PRSM]):
     """Base class for plugin resource setting panels."""
 
-    def __init__(self, model, **kwargs):
+    def __init__(self, model: PRSM, **kwargs):
         super().__init__(model, **kwargs)
 
         self._model.observe(
