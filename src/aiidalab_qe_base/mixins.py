@@ -26,11 +26,11 @@ class HasInputStructure(tl.HasTraits):
 
     @property
     def has_pbc(self):
-        return not self.has_structure or any(self.input_structure.pbc)
+        return self.has_structure and any(self.input_structure.pbc)
 
     @property
     def has_tags(self):
-        return any(
+        return self.has_structure and any(
             not kind_name.isalpha()
             for kind_name in self.input_structure.get_kind_names()
         )
@@ -58,7 +58,7 @@ class HasModels(t.Generic[T]):
                 return self._models[identifier]
             else:
                 return self._models[keys[0]].get_model(keys[1])
-        raise ValueError(f"Model with identifier '{identifier}' not found.")
+        raise KeyError(f"Model with identifier '{identifier}' not found.")
 
     def get_models(self) -> t.Iterable[tuple[str, T]]:
         return self._models.items()
@@ -102,7 +102,7 @@ class HasProcess(tl.HasTraits):
     def properties(self):
         process_node = self.fetch_process_node()
         # read the attributes directly instead of using the `get_list` method
-        # to avoid error in case of the orm.List object being converted to a orm.Data object
+        # to avoid error in case the `orm.List` object was converted to an `orm.Data`
         return (
             process_node.inputs.properties.base.attributes.get("list")
             if process_node
