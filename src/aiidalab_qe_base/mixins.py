@@ -3,10 +3,11 @@ from __future__ import annotations
 import typing as t
 
 import traitlets as tl
-
 from aiida import orm
 from aiida.common.exceptions import NotExistent
 from aiida_quantumespresso.data.hubbard_structure import HubbardStructureData
+
+from aiidalab_qe_base.panels.settings import SettingsModel
 
 T = t.TypeVar("T")
 
@@ -51,13 +52,18 @@ class HasModels(t.Generic[T]):
         for identifier, model in models.items():
             self.add_model(identifier, model)
 
-    def get_model(self, identifier) -> T:
+    def get_model(self, identifier: str) -> T:
         keys = identifier.split(".", 1)
         if self.has_model(keys[0]):
             if len(keys) == 1:
                 return self._models[identifier]
             else:
-                return self._models[keys[0]].get_model(keys[1])
+                sub_model = self._models[keys[0]]
+                if isinstance(sub_model, HasModels):
+                    return sub_model.get_model(keys[1])
+                raise TypeError(
+                    f"Model with identifier '{identifier}' does not have sub-models."
+                )
         raise KeyError(f"Model with identifier '{identifier}' not found.")
 
     def get_models(self) -> t.Iterable[tuple[str, T]]:
@@ -71,18 +77,21 @@ class HasModels(t.Generic[T]):
                 (model, "blockers"),
                 (self, "blockers"),
             )
-        for dependency in model.dependencies:
-            dependency_parts = dependency.rsplit(".", 1)
-            if len(dependency_parts) == 1:  # from parent
-                target_model = self
-                trait = dependency
-            else:  # from sibling
-                sibling, trait = dependency_parts
-                target_model = self.get_model(sibling)
-            tl.dlink(
-                (target_model, trait),
-                (model, trait),
-            )
+        if isinstance(model, SettingsModel):
+            for dependency in model.dependencies:
+                dependency_parts = dependency.rsplit(".", 1)
+                if len(dependency_parts) == 1:  # from parent
+                    target_model = self
+                    trait = dependency
+                else:  # from sibling
+                    sibling, trait = dependency_parts
+                    target_model = self.get_model(sibling)
+                tl.dlink(
+                    (target_model, trait),
+                    (model, trait),
+                )
+        else:
+            raise TypeError(f"Model linking is not supported for {type(model)}.")
 
 
 class HasProcess(tl.HasTraits):
