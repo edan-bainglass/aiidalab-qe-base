@@ -1,3 +1,5 @@
+import typing as t
+
 import traitlets as tl
 
 
@@ -14,7 +16,17 @@ class MetaHasTraitsLast(tl.MetaHasTraits):
         return super().__new__(cls, name, bases, classdict)
 
 
-class Model(tl.HasTraits, metaclass=MetaHasTraitsLast):
+# For IDE type checking
+# Type checking struggles with `traitlets.HasTraits`
+if t.TYPE_CHECKING:
+    HasTraits = object
+    MetaClass = type
+else:
+    HasTraits = tl.HasTraits
+    MetaClass = MetaHasTraitsLast
+
+
+class Model(HasTraits, metaclass=MetaClass):
     """A parent class for all MVC models.
 
     The class extends `traitlet`'s `HasTraits` and uses a metaclass to

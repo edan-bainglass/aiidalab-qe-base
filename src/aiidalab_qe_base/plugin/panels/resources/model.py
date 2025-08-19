@@ -13,7 +13,7 @@ class PluginResourceSettingsModel(ResourceSettingsModel):
 
     override = tl.Bool(False)
 
-    def add_model(self, identifier, model: CodeModel):
+    def add_model(self, identifier: str, model: CodeModel):
         super().add_model(identifier, model)
         model.activate()
 
