@@ -12,5 +12,5 @@ class PanelModel(Model):
         Which plugin this panel belong to.
     """
 
-    title = ""
-    identifier = ""
+    title = "Panel"
+    identifier = "panel"

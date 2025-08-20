@@ -10,6 +10,9 @@ from ..settings import SettingsModel
 class ResourceSettingsModel(SettingsModel, HasModels[CodeModel]):
     """Base model for resource setting models."""
 
+    title = "Resources"
+    identifier = "resources"
+
     global_codes = tl.Dict(
         key_trait=tl.Unicode(),
         value_trait=tl.Dict(),

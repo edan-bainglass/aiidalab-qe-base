@@ -8,6 +8,9 @@ from ..settings import SettingsModel
 class ConfigurationSettingsModel(SettingsModel, Confirmable):
     """Base model for configuration settings models."""
 
+    title = "Configuration"
+    identifier = "configuration"
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._defaults: dict[str, t.Any] = {}

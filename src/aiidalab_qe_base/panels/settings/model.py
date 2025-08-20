@@ -7,6 +7,9 @@ from aiidalab_qe_base.panels.panel import PanelModel
 class SettingsModel(PanelModel, HasBlockers):
     """Base model for settings models."""
 
+    title = "Settings"
+    identifier = "settings"
+
     include = tl.Bool(False)
     loaded_from_process = tl.Bool(False)
 

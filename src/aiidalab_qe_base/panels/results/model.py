@@ -10,6 +10,11 @@ from ..settings import SettingsModel
 
 
 class ResultsModel(SettingsModel, HasProcess):
+    """Base model for results models."""
+
+    title = "Results"
+    identifier = "results"
+
     process_status_notification = tl.Unicode("")
 
     _this_process_label = ""
