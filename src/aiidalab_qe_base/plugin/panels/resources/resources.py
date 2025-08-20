@@ -74,7 +74,11 @@ class PluginResourceSettingsPanel(ResourceSettingsPanel[PRSM]):
         super()._render_code_widget(code_model, code_widget)
         self._link_override_to_widget_disable(code_model, code_widget)
 
-    def _link_override_to_widget_disable(self, code_model, code_widget):
+    def _link_override_to_widget_disable(
+        self,
+        code_model: CodeModel,
+        code_widget: widgets.QEAppComputationalResourcesWidget,
+    ):
         """Links the override attribute of the code model to the disable attribute
         of subwidgets of the code widget."""
         ipw.dlink(

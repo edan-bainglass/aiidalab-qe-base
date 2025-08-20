@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import typing as t
+import traitlets as tl
 
 from ..panel import Panel
 from .model import SettingsModel
@@ -13,4 +16,4 @@ class SettingsPanel(Panel[SM]):
 
     def __init__(self, model: SM, **kwargs):
         super().__init__(model=model, **kwargs)
-        self.links = []
+        self.links: list[tl.dlink | tl.link] = []

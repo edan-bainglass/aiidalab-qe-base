@@ -32,9 +32,9 @@ class CodeModel(Model):
     def __init__(
         self,
         *,
-        name="",
-        description,
-        default_calc_job_plugin,
+        name: str = "",
+        description: str,
+        default_calc_job_plugin: str,
         code_widget_class=QEAppComputationalResourcesWidget,
     ):
         self.name = name

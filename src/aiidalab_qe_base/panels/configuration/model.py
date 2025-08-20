@@ -1,3 +1,5 @@
+import typing as t
+
 from aiidalab_qe_base.mixins import Confirmable
 
 from ..settings import SettingsModel
@@ -8,7 +10,7 @@ class ConfigurationSettingsModel(SettingsModel, Confirmable):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._defaults = {}
+        self._defaults: dict[str, t.Any] = {}
 
     def update(self, specific=""):
         """Updates the model.

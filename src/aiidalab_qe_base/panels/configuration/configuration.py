@@ -1,6 +1,8 @@
 import os
 import typing as t
 
+from aiidalab_qe_base.mixins import HasInputStructure
+
 from ..settings import SettingsPanel
 from .model import ConfigurationSettingsModel
 
@@ -29,7 +31,7 @@ class ConfigurationSettingsPanel(SettingsPanel[CSM]):
         if "PYTEST_CURRENT_TEST" in os.environ:
             # Skip resetting to avoid having to inject a structure when testing
             return
-        if hasattr(self._model, "input_structure") and not self._model.input_structure:
+        if isinstance(self._model, HasInputStructure) and not self._model.has_structure:
             self._reset()
 
     def update(self, specific=""):

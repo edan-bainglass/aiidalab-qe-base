@@ -25,7 +25,7 @@ class ResourceSettingsModel(SettingsModel, HasModels[CodeModel]):
         # Used by the code-setup thread to fetch code options
         self.DEFAULT_USER_EMAIL = orm.User.collection.get_default().email
 
-    def add_model(self, identifier, model):
+    def add_model(self, identifier: str, model: CodeModel):
         super().add_model(identifier, model)
         code_key = model.default_calc_job_plugin.split(".")[-1]
         model.update(
