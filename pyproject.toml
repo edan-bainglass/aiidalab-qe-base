@@ -29,6 +29,9 @@ test = [
 Homepage = "https://github.com/aiidalab/aiidalab-qe-base"
 Repository = "https://github.com/aiidalab/aiidalab-qe-base"
 
+[project.entry-points."aiida.workflows"]
+"aiidalab_qe_base.testing.workflows.mock" = "aiidalab_qe_base.tests.conftest:MockWorkChain"
+
 [build-system]
 requires = ["flit_core~=3.4"]
 build-backend = "flit_core.buildapi"
@@ -40,4 +43,12 @@ name = "aiidalab_qe_base"
 exclude = [
     'docs/',
     'tests/',
+]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore::UserWarning",
+    "ignore:.*zmq.eventloop.ioloop is deprecated.*:DeprecationWarning",
+    "ignore:.*use the instance .metadata dictionary directly.*:DeprecationWarning",
+    "ignore:Object of type .* not in session, .* operation along .* will not proceed:sqlalchemy.exc.SAWarning"
 ]
