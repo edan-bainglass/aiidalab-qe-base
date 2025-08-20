@@ -1,9 +1,16 @@
+import sys
 import typing as t
 
 import ipywidgets as ipw
 from aiidalab_widgets_base import LoadingWidget
 
 from .model import PanelModel
+
+if sys.version_info >= (3, 11):
+    from typing import Self
+else:
+    from typing_extensions import Self
+
 
 PM = t.TypeVar("PM", bound=PanelModel)
 
@@ -12,7 +19,12 @@ class Panel(ipw.VBox, t.Generic[PM]):
     """Base class for all panels."""
 
     rendered = False
-    loading_message = "Loading {identifier} panel"
+
+    # For IDE type checking
+    # Type checking struggles with `traitlets.HasTraits`, which inherits
+    # `traitlets.HasDescriptors`, which in turn defines `__new__(...) -> t.Any`
+    def __new__(cls, *args: t.Any, **kwargs: t.Any) -> Self:
+        return super().__new__(cls, *args, **kwargs)
 
     def __init__(self, model: PM, **kwargs):
         loading_message = self.loading_message.format(identifier=model.identifier)

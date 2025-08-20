@@ -1,6 +1,6 @@
-import typing as t
-
 import traitlets as tl
+
+from aiidalab_qe_base.utils import HasTraits
 
 
 class MetaHasTraitsLast(tl.MetaHasTraits):
@@ -16,17 +16,7 @@ class MetaHasTraitsLast(tl.MetaHasTraits):
         return super().__new__(cls, name, bases, classdict)
 
 
-# For IDE type checking
-# Type checking struggles with `traitlets.HasTraits`
-if t.TYPE_CHECKING:
-    HasTraits = object
-    MetaClass = type
-else:
-    HasTraits = tl.HasTraits
-    MetaClass = MetaHasTraitsLast
-
-
-class Model(HasTraits, metaclass=MetaClass):
+class Model(HasTraits, metaclass=MetaHasTraitsLast):
     """A parent class for all MVC models.
 
     The class extends `traitlet`'s `HasTraits` and uses a metaclass to

@@ -9,13 +9,7 @@ from aiida_quantumespresso.data.hubbard_structure import HubbardStructureData
 
 from aiidalab_qe_base.panels.settings import SettingsModel
 
-# For IDE type checking
-# Type checking struggles with `traitlets.HasTraits`
-if t.TYPE_CHECKING:
-    HasTraits = object
-else:
-    HasTraits = tl.HasTraits
-
+from .utils import HasTraits
 
 T = t.TypeVar("T")
 
