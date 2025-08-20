@@ -64,4 +64,4 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest -v tests --cov=aiidalab_qe_tools
+          pytest -v tests --cov=aiidalab_qe_base
