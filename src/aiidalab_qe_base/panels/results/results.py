@@ -18,7 +18,7 @@ class ResultsPanel(Panel[RM]):
     It has a update method to update the result in the panel.
     """
 
-    loading_message = "Loading {identifier} results"
+    _loading_message = "Loading {identifier} results"
 
     def __init__(self, model: RM, **kwargs):
         super().__init__(model=model, **kwargs)
