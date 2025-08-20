@@ -7,7 +7,7 @@ from aiida import orm
 from aiida.common.exceptions import NotExistent
 from aiida_quantumespresso.data.hubbard_structure import HubbardStructureData
 
-from aiidalab_qe_base.panels.settings import SettingsModel
+from .models import Model
 
 from .utils import HasTraits
 
@@ -46,7 +46,7 @@ class HasModels(t.Generic[T]):
     def has_model(self, identifier):
         return identifier in self._models
 
-    def add_model(self, identifier, model: T):
+    def add_model(self, identifier: str, model: T):
         self._models[identifier] = model
         self._link_model(model)
 
@@ -79,7 +79,7 @@ class HasModels(t.Generic[T]):
                 (model, "blockers"),
                 (self, "blockers"),
             )
-        if isinstance(model, SettingsModel):
+        if isinstance(model, Model):
             for dependency in model.dependencies:
                 dependency_parts = dependency.rsplit(".", 1)
                 if len(dependency_parts) == 1:  # from parent
