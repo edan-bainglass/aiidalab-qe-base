@@ -11,8 +11,6 @@ from .models import Model
 
 from .utils import HasTraits
 
-T = t.TypeVar("T")
-
 
 class HasInputStructure(HasTraits):
     input_structure = tl.Union(
@@ -39,22 +37,25 @@ class HasInputStructure(HasTraits):
         )
 
 
-class HasModels(t.Generic[T]):
-    def __init__(self):
-        self._models: dict[str, T] = {}
+M = t.TypeVar("M", bound=Model)
 
-    def has_model(self, identifier):
+
+class HasModels(t.Generic[M]):
+    def __init__(self):
+        self._models: dict[str, M] = {}
+
+    def has_model(self, identifier: str):
         return identifier in self._models
 
-    def add_model(self, identifier: str, model: T):
+    def add_model(self, identifier: str, model: M):
         self._models[identifier] = model
         self._link_model(model)
 
-    def add_models(self, models: dict[str, T]):
+    def add_models(self, models: dict[str, M]):
         for identifier, model in models.items():
             self.add_model(identifier, model)
 
-    def get_model(self, identifier: str) -> T:
+    def get_model(self, identifier: str) -> M:
         keys = identifier.split(".", 1)
         if self.has_model(keys[0]):
             if len(keys) == 1:
@@ -68,32 +69,28 @@ class HasModels(t.Generic[T]):
                 )
         raise KeyError(f"Model with identifier '{identifier}' not found.")
 
-    def get_models(self) -> t.Iterable[tuple[str, T]]:
+    def get_models(self) -> t.Iterable[tuple[str, M]]:
         return self._models.items()
 
-    def _link_model(self, model: T):
-        if not hasattr(model, "dependencies"):
-            return
+    def _link_model(self, model: M):
+        assert isinstance(model, Model), "HasModels only works with Model instances."
         if isinstance(model, HasBlockers):
             tl.dlink(
                 (model, "blockers"),
                 (self, "blockers"),
             )
-        if isinstance(model, Model):
-            for dependency in model.dependencies:
-                dependency_parts = dependency.rsplit(".", 1)
-                if len(dependency_parts) == 1:  # from parent
-                    target_model = self
-                    trait = dependency
-                else:  # from sibling
-                    sibling, trait = dependency_parts
-                    target_model = self.get_model(sibling)
-                tl.dlink(
-                    (target_model, trait),
-                    (model, trait),
-                )
-        else:
-            raise TypeError(f"Model linking is not supported for {type(model)}.")
+        for dependency in model.dependencies:
+            dependency_parts = dependency.rsplit(".", 1)
+            if len(dependency_parts) == 1:  # from parent
+                target_model = self
+                trait = dependency
+            else:  # from sibling
+                sibling, trait = dependency_parts
+                target_model = self.get_model(sibling)
+            tl.dlink(
+                (target_model, trait),
+                (model, trait),
+            )
 
 
 class HasProcess(HasTraits):
